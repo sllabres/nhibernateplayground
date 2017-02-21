@@ -18,8 +18,7 @@ namespace Nhibernate.One
         {
             var config = Fluently.Configure()
                         .Database(SQLiteConfiguration.Standard
-                            .ConnectionString($"Data Source=c:\\Development\\testdb.db;Version=3;New=True;")
-                            .ShowSql())
+                            .ConnectionString($"Data Source=c:\\Development\\testdb.db;Version=3;New=True;"))
                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<NHibernateTests>())
                         .ExposeConfiguration(c =>
                         {
