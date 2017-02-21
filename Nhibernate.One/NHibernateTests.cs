@@ -56,10 +56,9 @@ namespace Nhibernate.One
         [Test]
         public void QueryVsGet()
         {
-            int id = 0;
             using (var session = _sessionFactory.OpenSession())
             {
-                id = (int)session.Save(new SimpleEntity()
+                var id = (int)session.Save(new SimpleEntity()
                 {
                     Name = "Hello Entity!"
                 });
@@ -72,13 +71,50 @@ namespace Nhibernate.One
                 Assert.That(entity.Name, Is.EqualTo("Hello Entity!"));
                 Assert.That(queryEntity.Name, Is.EqualTo("Hello Entity!"));
                 Assert.That(id, Is.Not.Null);
-            }            
+            }
+        }
+
+        [Test]
+        public void LoadEntityAndMakeChanges()
+        {
+            int id = 0;
+            using (var session = _sessionFactory.OpenSession())
+            {
+                id = (int)session.Save(new SimpleEntity()
+                {
+                    Name = "Before Load!",
+                    OtherField = "Other Field!"
+                });
+
+                var entity = session.Get<SimpleEntity>(id);
+                Assert.That(entity, Is.Not.Null);
+            }
+
+            using (var session = _sessionFactory.OpenSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                var entity = session.Load<SimpleEntity>(id);
+                entity.Name = "Loaded Entity!";
+
+                var otherEntity = session.Get<SimpleEntity>(999);
+
+                session.Save(entity);
+                transaction.Commit();
+            }
+
+            using (var session = _sessionFactory.OpenSession())
+            {
+                var entity = session.Get<SimpleEntity>(id);
+                Assert.That(entity.Name, Is.EqualTo("Loaded Entity!"));
+                Assert.That(entity.OtherField, Is.EqualTo("Other Field!"));
+            }
         }
 
         public class SimpleEntity
         {
             public virtual int Id { get; set; }
             public virtual string Name { get; set; }
+            public virtual string OtherField { get; set; }
         }
 
         public class SimpleEntityMap : ClassMap<SimpleEntity>
@@ -87,6 +123,7 @@ namespace Nhibernate.One
             {
                 Id(x => x.Id, "Id");
                 Map(x => x.Name, "Name");
+                Map(x => x.OtherField, "OtherField");
                 Table("SimpleEntities");
             }
         }
