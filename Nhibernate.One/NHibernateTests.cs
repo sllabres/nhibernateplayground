@@ -18,7 +18,7 @@ namespace Nhibernate.One
         {
             var config = Fluently.Configure()
                         .Database(SQLiteConfiguration.Standard
-                            .ConnectionString($"Data Source=c:\\Development\\testdb.db;Version=3;New=True;"))
+                            .ConnectionString($"Data Source=c:\\SourceCode\\Learning\\nhibernateplayground\\testdb.db;Version=3;New=True;"))
                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<NHibernateTests>())
                         .ExposeConfiguration(c =>
                         {
@@ -48,6 +48,35 @@ namespace Nhibernate.One
                 });
 
                 var entity = session.Get<SimpleEntity>(id);
+                Assert.That(entity, Is.Not.Null);
+            }
+        }
+
+        [Test]
+        public void SaveAndRefresh()
+        {
+            using (var session = _sessionFactory.OpenSession())
+            {
+                var entity = new SimpleEntity()
+                {
+                    Name = "Hello Entity!"
+                };
+
+                session.Save(entity);
+                session.Refresh(entity);
+                Assert.That(entity.Id, Is.Not.Null);
+                Assert.That(entity, Is.Not.Null);
+            }
+
+            using (var session = _sessionFactory.OpenSession())
+            {
+                var entity = new SimpleEntity()
+                {
+                    Name = "Hello Entity!"
+                };
+
+                var id = (int)session.Save(entity);
+                Assert.That(id, Is.Not.Null);
                 Assert.That(entity, Is.Not.Null);
             }
         }
