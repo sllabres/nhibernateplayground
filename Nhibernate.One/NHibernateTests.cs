@@ -1,13 +1,39 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections;
+using NUnit.Framework;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate.Tool.hbm2ddl;
 using FluentNHibernate.Mapping;
 using NHibernate;
 using System.Linq;
+using FluentNHibernate.Diagnostics;
+using NHibernate.SqlCommand;
+using NHibernate.Type;
+using NLog;
 
 namespace Nhibernate.One
 {
+    public class TestInterceptor : EmptyInterceptor
+    {
+        private Logger log = LogManager.GetLogger("NHibernate.SQL");
+
+        public override void AfterTransactionBegin(ITransaction tx)
+        {
+            log.Debug("AfterTransactionBegin");
+        }
+
+        public override void BeforeTransactionCompletion(ITransaction tx)
+        {
+            log.Debug("BeforeTransactionCompletion");
+        }
+
+        public override void AfterTransactionCompletion(ITransaction tx)
+        {
+            log.Debug("AfterTransactionCompletion");
+        }
+    }
+
     [TestFixture]
     public class NHibernateTests
     {
@@ -25,6 +51,7 @@ namespace Nhibernate.One
                             var se = new SchemaExport(c);
                             se.Drop(true, true);
                             se.Create(true, true);
+                            c.SetInterceptor(new TestInterceptor());
                         })
                         .BuildConfiguration();
 
@@ -41,15 +68,36 @@ namespace Nhibernate.One
         public void CanInsertEntity()
         {
             using (var session = _sessionFactory.OpenSession())
+            using (var transaction = session.BeginTransaction())
             {
-                var id = session.Save(new SimpleEntity()
                 {
-                    Name = "Hello Entity!"
-                });
+                    var id = session.Save(new SimpleEntity()
+                    {
+                        Name = "Hello Entity!"
+                    });
 
-                var entity = session.Get<SimpleEntity>(id);
-                Assert.That(entity, Is.Not.Null);
+                    var entity = session.Get<SimpleEntity>(id);
+                    transaction.Commit();
+                    Assert.That(entity, Is.Not.Null);
+                }
             }
+        }
+
+        [Test]
+        public void FlushWithoutTransaction()
+        {
+            Console.WriteLine("-------------------------------------");
+            var session = _sessionFactory.OpenSession();
+
+            var id = session.Save(new SimpleEntity
+            {
+                Name = "Hello Entity!"
+            });
+
+            session.Flush();
+            session.Dispose();
+            Assert.That(id, Is.Not.Zero);
+            Console.WriteLine("-------------------------------------");
         }
 
         [Test]
