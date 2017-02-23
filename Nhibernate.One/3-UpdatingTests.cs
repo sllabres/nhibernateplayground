@@ -13,20 +13,49 @@ namespace Nhibernate.One
         /// Calling flush isn't needed
         /// </summary>
         [Test]
-        public void CanUpdateEntity()
+        public void UpdateLoad()
         {
-            int _lastId = 0;
+            int id = 0;
+            using (var session = _sessionFactory.OpenSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                id = (int)session.Save(new SimpleEntity()
+                {
+                    Name = "Initial Name",
+                    OtherField = "Initial Field"
+                });
+
+                transaction.Commit();
+            }
+
+            using (var session = _sessionFactory.OpenSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                var entity = session.Load<SimpleEntity>(id);
+
+                entity.Name = "Changed Name";
+                session.Save(entity);
+                transaction.Commit();
+            }
+
+            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
+            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(1));
+            Assert.That(_sessionFactory.Statistics.EntityUpdateCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void UpdateGet()
+        {
+            int id = 0;
 
             using (var session = _sessionFactory.OpenSession())
             using (var transaction = session.BeginTransaction())
             {
                 {
-                    var id = session.Save(new SimpleEntity()
+                    id = (int)session.Save(new SimpleEntity()
                     {
                         Name = "FirstEntity"
                     });
-
-                    _lastId = (int)id;
 
                     transaction.Commit();
                 }
@@ -36,15 +65,15 @@ namespace Nhibernate.One
             using (var transaction = session.BeginTransaction())
             {
                 {
-                    var entity = session.Get<SimpleEntity>(_lastId);
+                    var entity = session.Get<SimpleEntity>(id);
                     entity.Name = "NewName";
 
                     session.Save(new SimpleEntity()
                     {
                         Name = "SecondEntity"
-                    });                    
+                    });
 
-                    var secondEntityGet = session.Get<SimpleEntity>(_lastId);
+                    var secondEntityGet = session.Get<SimpleEntity>(id);
 
                     transaction.Commit();
                 }

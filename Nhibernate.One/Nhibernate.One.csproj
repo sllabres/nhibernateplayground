@@ -84,15 +84,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="1-InsertingTests.cs" />
-    <Compile Include="5-LoadTests.cs" />
-    <Compile Include="3-QueryGetTests.cs" />
+    <Compile Include="2-QueryGetTests.cs" />
     <Compile Include="4-RefreshTests.cs" />
     <Compile Include="NHibernateSetup.cs" />
     <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleEntity.cs" />
     <Compile Include="TestInterceptor.cs" />
-    <Compile Include="2-UpdatingTests.cs" />
+    <Compile Include="3-UpdatingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
