@@ -7,7 +7,9 @@ namespace Nhibernate.One
     {
 
         /// <summary>
-        /// Update happens on flush dirty, at the end of the transaction.
+        /// Entities are attached to session and nhibernate tracks changes
+        /// Calling save isn't needed on attached objects
+        /// Update happens on flush dirty, at the end of the transaction on commit.        
         /// Calling flush isn't needed
         /// </summary>
         [Test]
