@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Specialized;
-using System.Configuration;
 using NLog;
 using NHibernate;
 
 namespace Nhibernate.One
 {
-	///Add <add key="nhibernate-logger" value="MyNamespace.NLogFactory, MyAssemblyName"/>
-    
+    ///Add <add key="nhibernate-logger" value="MyNamespace.NLogFactory, MyAssemblyName"/>
+
     public class NLogFactory : ILoggerFactory
     {
         #region ILoggerFactory Members
