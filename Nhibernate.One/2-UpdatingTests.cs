@@ -45,12 +45,12 @@ namespace Nhibernate.One
                     var secondEntityGet = session.Get<SimpleEntity>(_lastId);
 
                     transaction.Commit();
-
-                    Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(2));
-                    Assert.That(_sessionFactory.Statistics.EntityUpdateCount, Is.EqualTo(1));
-                    Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(1));
                 }
             }
+
+            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(2));
+            Assert.That(_sessionFactory.Statistics.EntityUpdateCount, Is.EqualTo(1));
+            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(1));
         }
     }
 }

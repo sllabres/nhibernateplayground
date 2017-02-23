@@ -23,11 +23,11 @@ namespace Nhibernate.One
                 var entity = session.Get<SimpleEntity>(id);                
                 
                 transaction.Commit();
-
-                Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
-                Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));
-                Assert.That(_sessionFactory.Statistics.QueryExecutionCount, Is.EqualTo(0));
             }
+
+            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
+            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));
+            Assert.That(_sessionFactory.Statistics.QueryExecutionCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -45,12 +45,12 @@ namespace Nhibernate.One
                     .Where(e => e.Id == id).List().First();
                 
                 Assert.That(queryEntity.Name, Is.EqualTo("Hello Entity!"));                
-                transaction.Commit();
-
-                Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
-                Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));
-                Assert.That(_sessionFactory.Statistics.QueryExecutionCount, Is.EqualTo(1));
+                transaction.Commit();                
             }
+
+            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
+            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));
+            Assert.That(_sessionFactory.Statistics.QueryExecutionCount, Is.EqualTo(1));
         }
     }
 }

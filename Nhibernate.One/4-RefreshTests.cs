@@ -22,11 +22,11 @@ namespace Nhibernate.One
 
                 session.Save(entity);
                 session.Refresh(entity);                
-                transaction.Commit();
+                transaction.Commit();                
+            }
 
-                Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
-                Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(1));
-            }            
+            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
+            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -41,11 +41,11 @@ namespace Nhibernate.One
                 };
 
                 var id = (int)session.Save(entity);                
-                transaction.Commit();
-
-                Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
-                Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));          
+                transaction.Commit();                
             }
+
+            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
+            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));
         }
     }
 }
