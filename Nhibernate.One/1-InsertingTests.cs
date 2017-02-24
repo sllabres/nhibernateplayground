@@ -1,10 +1,26 @@
 ﻿using NUnit.Framework;
 using System.Linq;
+using NHibernate;
 
 namespace Nhibernate.One
 {
-    public class InsertingTests : NHibernateSetup
+    public class InsertingTests
     {
+        private ISessionFactory _sessionFactory;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _sessionFactory = new NHibernateSessionFactoryBuilder()
+                .WithDefaultConfiguration()
+                .Build();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _sessionFactory.Dispose();
+        }
         /// <summary>
         /// Simple demonstration of inserting data using a transaction        
         /// Good practise to always use a transaction, even for reading data

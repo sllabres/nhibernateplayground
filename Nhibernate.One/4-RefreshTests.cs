@@ -1,10 +1,25 @@
 ﻿using NUnit.Framework;
 using System.Linq;
+using NHibernate;
 
 namespace Nhibernate.One
 {
-    public class RefreshTests : NHibernateSetup
+    public class RefreshTests
     {
+        private ISessionFactory _sessionFactory;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _sessionFactory = new NHibernateSessionFactoryBuilder().WithDefaultConfiguration().Build();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _sessionFactory.Dispose();
+        }
+
         /// <summary>
         /// Refresh incurs an additional database hit
         /// When saving the Id is returned by nhibernate

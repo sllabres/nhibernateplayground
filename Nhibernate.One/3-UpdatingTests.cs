@@ -1,10 +1,24 @@
 ﻿using NUnit.Framework;
 using System.Linq;
+using NHibernate;
 
 namespace Nhibernate.One
 {
-    public class UpdatingTests : NHibernateSetup
+    public class UpdatingTests
     {
+        private ISessionFactory _sessionFactory;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _sessionFactory = new NHibernateSessionFactoryBuilder().WithDefaultConfiguration().Build();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _sessionFactory.Dispose();
+        }
 
         /// <summary>
         /// Entities are attached to session and nhibernate tracks changes

@@ -7,8 +7,22 @@ namespace Nhibernate.One
 {
     /// http://stackoverflow.com/questions/2125668/difference-between-gett-and-loadt
     /// https://ayende.com/blog/3988/nhibernate-the-difference-between-get-load-and-querying-by-id
-    public class QueryGetTests : NHibernateSetup
+    public class QueryGetTests
     {
+        private ISessionFactory _sessionFactory;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _sessionFactory = new NHibernateSessionFactoryBuilder().WithDefaultConfiguration().Build();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _sessionFactory.Dispose();
+        }
+
         /// <summary>        
         /// Get hits the database or session cache to retrieve the entity data. If the entity exists it is returned, otherwise null will be returned.This is the safest way to determine whether an entity with a certain ID exists or not. If you're not sure what to use, use Get.
         /// </summary>

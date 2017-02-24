@@ -26,7 +26,6 @@ namespace Nhibernate.One
             log.Debug("BeforeTransactionCompletion");
             base.BeforeTransactionCompletion(tx);
         }
-
         public override void AfterTransactionCompletion(ITransaction tx)
         {
             log.Debug("AfterTransactionCompletion");
