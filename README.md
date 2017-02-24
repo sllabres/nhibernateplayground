@@ -1,0 +1,3 @@
+# nhibernateplayground
+
+http://sqlitebrowser.org/
