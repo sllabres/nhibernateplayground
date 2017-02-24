@@ -25,8 +25,7 @@ namespace Nhibernate.One
         }
 
         /// <summary>
-        /// Refresh incurs an additional database hit
-        /// When saving the Id is returned by nhibernate
+        /// Entity will not be persisted if the transaction fails
         /// </summary>
         [Test]
         public void FailedTransaction()
@@ -36,9 +35,9 @@ namespace Nhibernate.One
             {
                 try
                 {
-                    var entity = new SimpleEntity()
+                    var entity = new SimpleEntity
                     {
-                        Name = "FailedTransaction"
+                        Name = "FailTransaction"
                     };
 
                     session.Save(entity);
@@ -55,6 +54,10 @@ namespace Nhibernate.One
             Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));
         }
 
+        /// <summary>
+        /// When using an identity field nhibernate has to save the entity to database in orders to retrieve the Id
+        /// This means a failed transaction still causes the entity to be persisted to the database 
+        /// </summary>
         [Test]
         public void FailedTransactionWithMultipleSaves()
         {
@@ -85,10 +88,13 @@ namespace Nhibernate.One
                 }
             }
 
-            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(0));
+            Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
             Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(0));
         }
 
+        /// <summary>
+        /// Updates will not be persisted when the transaction fails
+        /// </summary>
         [Test]
         public void FailedTransactionWithUpdateSaves()
         {
@@ -114,6 +120,8 @@ namespace Nhibernate.One
                     var entityOne = session.Load<SimpleEntity>(id);
                     entityOne.OtherField = "Other Field";
 
+                    //session.Save(entityOne);
+
                     var entityTwo = new SimpleEntity
                     {
                         Name = "FailTransaction"
@@ -129,9 +137,9 @@ namespace Nhibernate.One
                 }
             }
 
+            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(1));
             Assert.That(_sessionFactory.Statistics.EntityInsertCount, Is.EqualTo(1));
             Assert.That(_sessionFactory.Statistics.EntityUpdateCount, Is.EqualTo(0));
-            Assert.That(_sessionFactory.Statistics.EntityLoadCount, Is.EqualTo(1));
         }
 
         public override bool OnSave(object entity, object id, object[] state, string[] propertyNames, IType[] types)
