@@ -34,7 +34,6 @@ namespace Nhibernate.One
                 var entity = session.Load<SimpleEntity>(id);
 
                 entity.Name = "Changed Name";
-                session.Save(entity);
                 transaction.Commit();
             }
 

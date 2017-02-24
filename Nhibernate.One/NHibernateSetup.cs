@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.IO;
+using System.Reflection;
+using NUnit.Framework;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate.Tool.hbm2ddl;
@@ -13,9 +15,10 @@ namespace Nhibernate.One
         [SetUp]
         public void SetUp()
         {
+            var databaseLocation = $"{Path.GetDirectoryName(new System.Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath)}\\testdb.db";
             var config = Fluently.Configure()
                         .Database(SQLiteConfiguration.Standard
-                            .ConnectionString($"Data Source=C:\\Development\\Nhibernate\\testdb.db;Version=3;New=True;"))
+                            .ConnectionString($"Data Source={databaseLocation};Version=3;New=True;"))
                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<NHibernateSetup>())
                         .ExposeConfiguration(c =>
                         {
