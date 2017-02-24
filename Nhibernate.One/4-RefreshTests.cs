@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System.Linq;
 using NHibernate;
 
 namespace Nhibernate.One
@@ -11,7 +10,9 @@ namespace Nhibernate.One
         [SetUp]
         public void SetUp()
         {
-            _sessionFactory = new NHibernateSessionFactoryBuilder().WithDefaultConfiguration().Build();
+            _sessionFactory = new NHibernateSessionFactoryBuilder()
+                .WithDefaultConfiguration()
+                .Build();
         }
 
         [TearDown]

@@ -1,5 +1,4 @@
 ﻿using NHibernate;
-using NHibernate.Proxy;
 using NUnit.Framework;
 using System.Linq;
 

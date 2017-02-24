@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using System.Linq;
 using NHibernate;
 using NHibernate.Type;
 
@@ -15,7 +14,8 @@ namespace Nhibernate.One
         {
             _sessionFactory = new NHibernateSessionFactoryBuilder()
                 .WithInterceptor(this)
-                .WithDefaultConfiguration().Build();
+                .WithDefaultConfiguration()
+                .Build();
         }
 
         [TearDown]
